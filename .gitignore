@@ -1,0 +1,9 @@
+/vendor/
+/.env
+/storage/logs/*.log
+/.DS_Store
+/frames_video1/
+/frames_video2/
+/contact_video1.jpg
+/contact_video2.jpg
+/VIDEO-*.mp4

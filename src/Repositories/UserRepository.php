@@ -22,6 +22,7 @@ final class UserRepository
                 u.full_name,
                 u.phone,
                 u.pin_hash,
+                u.photo_path,
                 u.global_role,
                 u.status,
                 m.role AS membership_role,
@@ -78,6 +79,7 @@ final class UserRepository
                 u.id,
                 u.full_name,
                 u.phone,
+                u.photo_path,
                 u.global_role,
                 m.role AS membership_role,
                 m.status AS membership_status,
@@ -94,6 +96,9 @@ final class UserRepository
         return $stmt->fetchAll();
     }
 
+    /**
+     * Cria ou vincula usuario ao baba. Retorna o id do usuario (existente ou novo).
+     */
     public function createOrAttachToBaba(
         int $babaId,
         string $fullName,
@@ -104,7 +109,7 @@ final class UserRepository
         string $paymentStatus,
         string $registeredDate,
         string $registeredTime
-    ): void {
+    ): int {
         $timestamp = DateTimeImmutable::createFromFormat('Y-m-d H:i', $registeredDate . ' ' . $registeredTime);
         if ($timestamp === false) {
             throw new RuntimeException('Data/hora de cadastro invalida.');
@@ -114,7 +119,7 @@ final class UserRepository
 
         $this->db->beginTransaction();
         try {
-            $userId = $this->findUserIdByPhone($phone);
+            $userId = $this->lookupUserIdByPhone($phone);
 
             if ($userId === null) {
                 $insertUser = $this->db->prepare(
@@ -147,10 +152,47 @@ final class UserRepository
             $this->ensurePlayerExists($babaId, $userId, $fullName);
 
             $this->db->commit();
+            return $userId;
         } catch (\Throwable $exception) {
             $this->db->rollBack();
             throw $exception;
         }
+    }
+
+    public function setUserPhoto(int $userId, string $relativeWebPath): void
+    {
+        $stmt = $this->db->prepare('UPDATE users SET photo_path = :path WHERE id = :id');
+        $stmt->execute([
+            ':path' => $relativeWebPath,
+            ':id' => $userId,
+        ]);
+    }
+
+    /**
+     * Membros ativos do baba para faixa de fotos (ordem alfabetica).
+     *
+     * @return list<array{id: int, full_name: string, photo_path: ?string}>
+     */
+    public function listBabaMemberFaces(int $babaId): array
+    {
+        $sql = <<<SQL
+            SELECT u.id, u.full_name, u.photo_path
+            FROM baba_members m
+            INNER JOIN users u ON u.id = m.user_id
+            WHERE m.baba_id = :baba_id
+              AND m.status = 'active'
+              AND u.status = 'active'
+            ORDER BY u.full_name ASC
+        SQL;
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':baba_id' => $babaId]);
+        /** @var list<array{id: int, full_name: string, photo_path: ?string}> */
+        return $stmt->fetchAll();
+    }
+
+    public function findUserIdByPhone(string $phone): ?int
+    {
+        return $this->lookupUserIdByPhone($phone);
     }
 
     public function updateMembershipSettings(
@@ -279,7 +321,7 @@ final class UserRepository
         ]);
     }
 
-    private function findUserIdByPhone(string $phone): ?int
+    private function lookupUserIdByPhone(string $phone): ?int
     {
         $stmt = $this->db->prepare('SELECT id FROM users WHERE phone = :phone LIMIT 1');
         $stmt->execute([':phone' => $phone]);

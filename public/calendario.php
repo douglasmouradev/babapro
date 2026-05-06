@@ -59,9 +59,11 @@ $matchList = $matches->listByBaba((int) $me['baba_id']);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Baba PRO - Calendario</title>
+    <link rel="icon" type="image/jpeg" href="/logo.jpg">
     <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body class="page">
+<?php require __DIR__ . '/partials/dash-topbar-drawer.php'; ?>
 <section class="panel app">
     <h1>Calendario</h1>
     <p class="meta">Agenda de jogos e eventos do baba.</p>
@@ -107,5 +109,11 @@ $matchList = $matches->listByBaba((int) $me['baba_id']);
     <a href="/mercado.php">Mercado</a>
     <?php if ($canManageUsers): ?><a href="/usuarios.php">Usuarios</a><?php endif; ?>
 </nav>
+<?php
+$drawerUser = $me;
+$drawerCanManageUsers = $canManageUsers;
+$drawerActive = 'calendario';
+require __DIR__ . '/partials/app-drawer.php';
+?>
 </body>
 </html>

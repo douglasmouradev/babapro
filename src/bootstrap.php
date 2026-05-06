@@ -93,6 +93,38 @@ function verifyCsrfToken(?string $token): bool
     return is_string($sessionToken) && hash_equals($sessionToken, $token);
 }
 
+/**
+ * Iniciais para avatar fallback (UTF-8 quando mbstring disponivel).
+ */
+function user_initials(string $fullName): string
+{
+    $fullName = trim($fullName);
+    if ($fullName === '') {
+        return '?';
+    }
+    $fullName = (string) preg_replace('/\([^)]*\)/u', '', $fullName);
+    $fullName = trim($fullName);
+    if ($fullName === '') {
+        return '?';
+    }
+    if (function_exists('mb_substr') && function_exists('mb_strtoupper')) {
+        $parts = preg_split('/\s+/u', $fullName, -1, PREG_SPLIT_NO_EMPTY);
+        if ($parts === false || $parts === []) {
+            return '?';
+        }
+        $slice = array_slice($parts, 0, 2);
+        $out = '';
+        foreach ($slice as $p) {
+            $out .= mb_strtoupper(mb_substr($p, 0, 1), 'UTF-8');
+        }
+        return $out !== '' ? $out : '?';
+    }
+    $parts = preg_split('/\s+/', $fullName);
+    $a = strtoupper(substr((string) ($parts[0] ?? ''), 0, 1));
+    $b = isset($parts[1]) ? strtoupper(substr((string) $parts[1], 0, 1)) : '';
+    return ($a . $b) !== '' ? $a . $b : '?';
+}
+
 function clientIp(): string
 {
     $candidates = [

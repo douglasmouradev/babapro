@@ -14,6 +14,7 @@ if (!$auth->isAuthenticated()) {
     redirect('/login.php');
 }
 
+$user = $auth->user();
 $canManageUsers = $auth->canManageUsers();
 ?>
 <!doctype html>
@@ -22,9 +23,11 @@ $canManageUsers = $auth->canManageUsers();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Baba PRO - Mercado</title>
+    <link rel="icon" type="image/jpeg" href="/logo.jpg">
     <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body class="page">
+<?php require __DIR__ . '/partials/dash-topbar-drawer.php'; ?>
 <section class="panel app">
     <h1>Mercado</h1>
     <p class="meta">Contratacoes e carteira do seu baba.</p>
@@ -39,5 +42,11 @@ $canManageUsers = $auth->canManageUsers();
     <a class="active" href="/mercado.php">Mercado</a>
     <?php if ($canManageUsers): ?><a href="/usuarios.php">Usuarios</a><?php endif; ?>
 </nav>
+<?php
+$drawerUser = $user;
+$drawerCanManageUsers = $canManageUsers;
+$drawerActive = 'mercado';
+require __DIR__ . '/partials/app-drawer.php';
+?>
 </body>
 </html>

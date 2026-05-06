@@ -3,6 +3,7 @@ CREATE TABLE users (
     full_name VARCHAR(120) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     pin_hash VARCHAR(255) NOT NULL,
+    photo_path VARCHAR(255) NULL,
     global_role ENUM('owner_saas','user') NOT NULL DEFAULT 'user',
     status ENUM('active','inactive') NOT NULL DEFAULT 'active',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

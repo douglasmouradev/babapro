@@ -7,6 +7,7 @@ require_once dirname(__DIR__) . '/src/bootstrap.php';
 use App\Core\Database;
 use App\Repositories\UserRepository;
 use App\Services\AuthService;
+use App\Support\AvatarStorage;
 
 $repository = new UserRepository(Database::connection());
 $auth = new AuthService($repository);
@@ -100,29 +101,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } elseif (!in_array($paymentStatus, ['adimplente', 'inadimplente'], true)) {
                 $error = 'Status financeiro invalido.';
             } else {
-                try {
-                    $repository->createOrAttachToBaba(
-                        (int) $user['baba_id'],
-                        $fullName,
-                        $phone,
-                        $pin,
-                        $role,
-                        $membershipStatus,
-                        $paymentStatus,
-                        $registeredDate,
-                        $registeredTime
-                    );
-                    $repository->createAuditLog(
-                        (int) $user['user_id'],
-                        (int) $user['baba_id'],
-                        'user_created_or_attached',
-                        null,
-                        ['full_name' => $fullName, 'phone' => $phone, 'role' => $role, 'access' => $membershipStatus, 'payment' => $paymentStatus],
-                        clientIp()
-                    );
-                    $feedback = 'Usuario cadastrado com sucesso.';
-                } catch (Throwable $exception) {
-                    $error = 'Nao foi possivel salvar o usuario. Verifique telefone e dados.';
+                $existingId = $repository->findUserIdByPhone($phone);
+                $photoFile = $_FILES['photo'] ?? null;
+                $photoOk = is_array($photoFile) && (int) ($photoFile['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK;
+
+                if ($existingId === null && !$photoOk) {
+                    $error = 'Foto obrigatoria no cadastro (JPG, PNG ou WebP, ate 2 MB).';
+                } elseif ($photoOk) {
+                    try {
+                        AvatarStorage::assertValidUpload($photoFile);
+                    } catch (Throwable $e) {
+                        $error = $e->getMessage();
+                    }
+                }
+
+                if ($error === null) {
+                    try {
+                        $newUserId = $repository->createOrAttachToBaba(
+                            (int) $user['baba_id'],
+                            $fullName,
+                            $phone,
+                            $pin,
+                            $role,
+                            $membershipStatus,
+                            $paymentStatus,
+                            $registeredDate,
+                            $registeredTime
+                        );
+                        if ($photoOk && is_array($photoFile)) {
+                            $relative = AvatarStorage::store($newUserId, $photoFile);
+                            $repository->setUserPhoto($newUserId, $relative);
+                        }
+                        $repository->createAuditLog(
+                            (int) $user['user_id'],
+                            (int) $user['baba_id'],
+                            'user_created_or_attached',
+                            null,
+                            [
+                                'full_name' => $fullName,
+                                'phone' => $phone,
+                                'role' => $role,
+                                'access' => $membershipStatus,
+                                'payment' => $paymentStatus,
+                                'photo_uploaded' => $photoOk,
+                            ],
+                            clientIp()
+                        );
+                        $feedback = 'Usuario cadastrado com sucesso.';
+                    } catch (Throwable $exception) {
+                        $error = 'Nao foi possivel salvar o usuario. Verifique telefone e dados.';
+                    }
                 }
             }
         }
@@ -143,16 +171,23 @@ $filteredUsers = count($users);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Baba PRO - Usuarios</title>
+    <link rel="icon" type="image/jpeg" href="/logo.jpg">
     <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body class="page">
+<?php require __DIR__ . '/partials/dash-topbar-drawer.php'; ?>
 <section class="panel app">
     <h1>Cadastrar usuarios</h1>
     <p class="meta">Adicione pessoas no baba com data e horario de cadastro.</p>
-    <form method="post" action="/usuarios.php">
+    <form method="post" action="/usuarios.php" enctype="multipart/form-data">
         <input type="hidden" name="_csrf" value="<?= htmlspecialchars(csrfToken(), ENT_QUOTES, 'UTF-8') ?>">
         <input type="hidden" name="action" value="create">
         <div class="form-grid">
+            <div class="field span-2">
+                <label for="photo">Foto de perfil <span class="label-req">obrigatoria no novo cadastro</span></label>
+                <input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp">
+                <p class="field-hint">JPG, PNG ou WebP. A foto aparece na barra do app e no card do proximo jogo.</p>
+            </div>
             <div class="field">
                 <label for="full_name">Nome completo</label>
                 <input id="full_name" name="full_name" required>
@@ -293,5 +328,11 @@ $filteredUsers = count($users);
     <a href="/mercado.php">Mercado</a>
     <a class="active" href="/usuarios.php">Usuarios</a>
 </nav>
+<?php
+$drawerUser = $user;
+$drawerCanManageUsers = $auth->canManageUsers();
+$drawerActive = 'usuarios';
+require __DIR__ . '/partials/app-drawer.php';
+?>
 </body>
 </html>

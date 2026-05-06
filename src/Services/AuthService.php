@@ -29,6 +29,9 @@ final class AuthService
             'user_id' => (int) $user['id'],
             'user_name' => $user['full_name'],
             'phone' => $user['phone'],
+            'photo_path' => isset($user['photo_path']) && is_string($user['photo_path']) && $user['photo_path'] !== ''
+                ? $user['photo_path']
+                : null,
             'baba_id' => (int) $user['baba_id'],
             'baba_name' => $user['baba_name'],
             'baba_code' => $user['baba_code'],

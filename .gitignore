@@ -7,3 +7,5 @@
 /contact_video1.jpg
 /contact_video2.jpg
 /VIDEO-*.mp4
+/public/uploads/avatars/*
+!/public/uploads/avatars/.gitkeep

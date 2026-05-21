@@ -59,6 +59,8 @@ if (isset($baba['welcome_message']) && is_string($baba['welcome_message']) && tr
 }
 
 $babaInitials = user_initials($babaName);
+$logoUrl = asset_url('/logo.jpg');
+$cssUrl = asset_url('/assets/app.css');
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -66,13 +68,99 @@ $babaInitials = user_initials($babaName);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Baba PRO - <?= htmlspecialchars($babaName, ENT_QUOTES, 'UTF-8') ?></title>
-    <link rel="icon" type="image/jpeg" href="/logo.jpg">
-    <link rel="stylesheet" href="/assets/app.css">
+    <link rel="icon" type="image/jpeg" href="<?= htmlspecialchars($logoUrl, ENT_QUOTES, 'UTF-8') ?>">
+    <link rel="stylesheet" href="<?= htmlspecialchars($cssUrl, ENT_QUOTES, 'UTF-8') ?>">
+    <style>
+        body.page--baba-welcome {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100dvh;
+            padding: 24px 16px 32px;
+            margin: 0;
+            background-color: #060912;
+            background-image:
+                radial-gradient(ellipse 120% 80% at 50% -20%, rgba(232, 163, 23, 0.09) 0%, transparent 55%),
+                linear-gradient(180deg, #060912 0%, #04060c 100%);
+            color: #f1f4fb;
+            font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        }
+        .baba-welcome {
+            width: min(420px, 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .baba-welcome-app-logo {
+            width: min(120px, 32vw);
+            height: auto;
+            border-radius: 16px;
+            filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.45));
+        }
+        .baba-welcome-card {
+            width: 100%;
+            padding: 28px 22px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(56, 74, 108, 0.55);
+            background: linear-gradient(168deg, rgba(20, 28, 48, 0.97) 0%, rgba(6, 9, 18, 0.98) 100%);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+            text-align: center;
+        }
+        .baba-welcome-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(232, 163, 23, 0.55);
+            box-shadow: 0 0 32px rgba(232, 163, 23, 0.22);
+            margin: 0 auto 12px;
+        }
+        .baba-welcome-photo--fallback {
+            display: grid;
+            place-items: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #0a0e16;
+            background: linear-gradient(145deg, #ffe08a 0%, #e8a317 100%);
+        }
+        .baba-welcome-code {
+            margin: 0 0 6px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #fcc424;
+        }
+        .baba-welcome-title {
+            margin: 0 0 14px;
+            font-size: 1.55rem;
+            font-weight: 800;
+        }
+        .baba-welcome-message {
+            margin: 0 0 22px;
+            font-size: 0.95rem;
+            line-height: 1.55;
+            color: #8b9bb8;
+        }
+        .btn-baba-enter {
+            width: 100%;
+            font-size: 1rem;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            background: linear-gradient(180deg, #ffd049 0%, #e8a317 52%, #b87400 100%);
+            color: #140e05;
+            box-shadow: 0 8px 28px rgba(232, 163, 23, 0.35);
+        }
+    </style>
 </head>
 <body class="page page--baba-welcome">
 <main class="baba-welcome">
     <div class="baba-welcome-brand">
-        <img src="/logo.jpg" width="120" height="120" alt="Baba PRO" class="baba-welcome-app-logo" decoding="async">
+        <img src="<?= htmlspecialchars($logoUrl, ENT_QUOTES, 'UTF-8') ?>" width="120" height="120" alt="Baba PRO" class="baba-welcome-app-logo" decoding="async">
     </div>
 
     <section class="baba-welcome-card" aria-labelledby="baba-welcome-title">

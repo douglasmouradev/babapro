@@ -23,6 +23,14 @@ Base inicial do SaaS Baba PRO em PHP + MySQL, com autenticacao por `telefone + c
    - `php -S localhost:8000 -t public`
 5. Acesse `http://localhost:8000/login.php`.
 
+### Site sem CSS / layout diferente do local
+
+No aaPanel, defina a **raiz do site (Document Root)** para a pasta `public`:
+
+`/www/wwwroot/babapro.tdesksolutions.com.br/public`
+
+Se a raiz for a pasta do projeto (sem `public`), o CSS em `/assets/app.css` nao carrega. A funcao `asset_url()` tenta corrigir com `/public/assets/...`, mas o ideal e ajustar a raiz no painel.
+
 ### Erro `Access denied for user 'babapro'@'localhost'`
 
 O MySQL local ainda nao tem o usuario/senha do `.env`. Rode o passo 2 acima ou altere no `.env` para um usuario que ja exista (ex.: `root` + sua senha local).

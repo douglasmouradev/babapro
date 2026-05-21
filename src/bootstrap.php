@@ -75,6 +75,35 @@ function redirect(string $path): never
     exit;
 }
 
+/**
+ * URL publica para assets (CSS, imagens). Se o site nao usa public/ como raiz,
+ * prefixa /public automaticamente quando o arquivo existir la.
+ */
+function asset_url(string $path): string
+{
+    $path = '/' . ltrim(str_replace('\\', '/', $path), '/');
+    $docRoot = rtrim(str_replace('\\', '/', (string) ($_SERVER['DOCUMENT_ROOT'] ?? '')), '/');
+
+    if ($docRoot !== '') {
+        if (is_file($docRoot . $path)) {
+            return $path;
+        }
+        if (is_file($docRoot . '/public' . $path)) {
+            return '/public' . $path;
+        }
+    }
+
+    $projectPublicFile = dirname(__DIR__) . '/public' . $path;
+    if (is_file($projectPublicFile)) {
+        $script = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? ''));
+        if (!str_contains($script, '/public/')) {
+            return '/public' . $path;
+        }
+    }
+
+    return $path;
+}
+
 function csrfToken(): string
 {
     if (!isset($_SESSION['_csrf_token'])) {
@@ -107,12 +136,23 @@ function user_initials(string $fullName): string
     if ($fullName === '') {
         return '?';
     }
+    $stopWords = ['de', 'da', 'do', 'dos', 'das', 'e'];
+
     if (function_exists('mb_substr') && function_exists('mb_strtoupper')) {
         $parts = preg_split('/\s+/u', $fullName, -1, PREG_SPLIT_NO_EMPTY);
         if ($parts === false || $parts === []) {
             return '?';
         }
-        $slice = array_slice($parts, 0, 2);
+        $meaningful = [];
+        foreach ($parts as $p) {
+            if (!in_array(mb_strtolower($p, 'UTF-8'), $stopWords, true)) {
+                $meaningful[] = $p;
+            }
+        }
+        if ($meaningful === []) {
+            $meaningful = $parts;
+        }
+        $slice = array_slice($meaningful, 0, 2);
         $out = '';
         foreach ($slice as $p) {
             $out .= mb_strtoupper(mb_substr($p, 0, 1), 'UTF-8');
@@ -120,8 +160,17 @@ function user_initials(string $fullName): string
         return $out !== '' ? $out : '?';
     }
     $parts = preg_split('/\s+/', $fullName);
-    $a = strtoupper(substr((string) ($parts[0] ?? ''), 0, 1));
-    $b = isset($parts[1]) ? strtoupper(substr((string) $parts[1], 0, 1)) : '';
+    $meaningful = [];
+    foreach ($parts as $p) {
+        if (!in_array(strtolower($p), $stopWords, true)) {
+            $meaningful[] = $p;
+        }
+    }
+    if ($meaningful === []) {
+        $meaningful = $parts;
+    }
+    $a = strtoupper(substr((string) ($meaningful[0] ?? ''), 0, 1));
+    $b = isset($meaningful[1]) ? strtoupper(substr((string) $meaningful[1], 0, 1)) : '';
     return ($a . $b) !== '' ? $a . $b : '?';
 }
 

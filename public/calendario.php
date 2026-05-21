@@ -17,6 +17,10 @@ if (!$auth->isAuthenticated()) {
     redirect('/login.php');
 }
 
+if ($auth->needsBabaWelcome()) {
+    redirect('/baba-bemvindo.php');
+}
+
 $canManageUsers = $auth->canManageUsers();
 $me = $auth->user();
 $error = null;
@@ -102,13 +106,11 @@ $matchList = $matches->listByBaba((int) $me['baba_id']);
     <?php endforeach; ?>
     <?php if ($matchList === []): ?><p class="meta">Nenhum jogo cadastrado.</p><?php endif; ?>
 </section>
-<nav class="nav" aria-label="Navegacao principal">
-    <a href="/dashboard.php">Home</a>
-    <a class="active" href="/calendario.php">Calendario</a>
-    <a href="/sorteio.php">Sorteio</a>
-    <a href="/mercado.php">Mercado</a>
-    <?php if ($canManageUsers): ?><a href="/usuarios.php">Usuarios</a><?php endif; ?>
-</nav>
+<?php
+$navActive = 'calendario';
+$navCanManageUsers = $canManageUsers;
+require __DIR__ . '/partials/bottom-nav.php';
+?>
 <?php
 $drawerUser = $me;
 $drawerCanManageUsers = $canManageUsers;

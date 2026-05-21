@@ -3,8 +3,13 @@ VALUES
     ('Douglas (Owner)', '71997087082', '$2y$12$.Aq40Xz3ehXuLGYcVqUrJelyyXTpQJq10cp.w3F6tXj2GX4kf5bFS', 'owner_saas'),
     ('Membro Exemplo', '71911112222', '$2y$12$b7fut.fsg6i3D8oa74n0KeIgm5dIi.e5fwIfcK2Tq324rXPqzSOcm', 'user');
 
-INSERT INTO babas (owner_user_id, name, code)
-VALUES (1, 'Baba de Quinta', 'BABA10');
+INSERT INTO babas (owner_user_id, name, code, welcome_message)
+VALUES (
+    1,
+    'Baba de Quinta',
+    'BABA10',
+    'Fala, time! O Baba de Quinta esta no ar. Bora aquecer, confirmar presenca e fazer acontecer mais um jogo epico. Boas vendas na quadra!'
+);
 
 INSERT INTO baba_members (baba_id, user_id, role)
 VALUES

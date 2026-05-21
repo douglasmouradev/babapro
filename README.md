@@ -11,12 +11,21 @@ Base inicial do SaaS Baba PRO em PHP + MySQL, com autenticacao por `telefone + c
 
 ## Como rodar local
 
-1. Copie `.env.example` para `.env`.
-2. Crie o banco `baba_pro` no MySQL.
-3. Rode `database/schema.sql` e depois `database/seed.sql`.
+1. Copie `.env.example` para `.env` e ajuste `DB_*`.
+2. Crie banco e usuario no MySQL (uma das opcoes):
+   - **Recomendado:** `chmod +x scripts/setup_local_db.sh && ./scripts/setup_local_db.sh` (pede a senha do `root` local)
+   - Manual: `mysql -u root -p < scripts/setup_local_mysql.sql` (senha do usuario no SQL deve bater com o `.env`)
+3. Rode o schema e seed:
+   - `mysql -u root -p babapro < database/schema.sql`
+   - `mysql -u root -p babapro < database/seed.sql`
+   - `php scripts/migrate_baba_branding.php`
 4. Inicie servidor local:
    - `php -S localhost:8000 -t public`
 5. Acesse `http://localhost:8000/login.php`.
+
+### Erro `Access denied for user 'babapro'@'localhost'`
+
+O MySQL local ainda nao tem o usuario/senha do `.env`. Rode o passo 2 acima ou altere no `.env` para um usuario que ja exista (ex.: `root` + sua senha local).
 
 ## Login de teste
 

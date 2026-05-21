@@ -14,6 +14,10 @@ if (!$auth->isAuthenticated()) {
     redirect('/login.php');
 }
 
+if ($auth->needsBabaWelcome()) {
+    redirect('/baba-bemvindo.php');
+}
+
 $user = $auth->user();
 $canManageUsers = $auth->canManageUsers();
 ?>
@@ -37,13 +41,11 @@ $canManageUsers = $auth->canManageUsers();
     </div>
     <button class="btn btn-primary" style="margin-top:12px;width:100%;" type="button">Gerar confronto equilibrado</button>
 </section>
-<nav class="nav" aria-label="Navegacao principal">
-    <a href="/dashboard.php">Home</a>
-    <a href="/calendario.php">Calendario</a>
-    <a class="active" href="/sorteio.php">Sorteio</a>
-    <a href="/mercado.php">Mercado</a>
-    <?php if ($canManageUsers): ?><a href="/usuarios.php">Usuarios</a><?php endif; ?>
-</nav>
+<?php
+$navActive = 'sorteio';
+$navCanManageUsers = $canManageUsers;
+require __DIR__ . '/partials/bottom-nav.php';
+?>
 <?php
 $drawerUser = $user;
 $drawerCanManageUsers = $canManageUsers;

@@ -1,5 +1,8 @@
 /vendor/
 /.env
+/.htaccess
+/.user.ini
+/.well-known/
 /storage/logs/*.log
 /.DS_Store
 /frames_video1/

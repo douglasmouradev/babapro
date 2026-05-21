@@ -12,7 +12,7 @@ $auth = new AuthService(new UserRepository(Database::connection()));
 $users = new UserRepository(Database::connection());
 
 if ($auth->isAuthenticated()) {
-    redirect('/dashboard.php');
+    redirect($auth->needsBabaWelcome() ? '/baba-bemvindo.php' : '/dashboard.php');
 }
 
 $error = null;
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ['phone' => $phone, 'baba_code' => $babaCode],
                 $ip
             );
-            redirect('/dashboard.php');
+            redirect('/baba-bemvindo.php');
         }
     }
 }
@@ -130,9 +130,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .brand-logo {
             display: block;
-            max-width: min(196px, 70%);
+            width: min(280px, 88vw);
+            max-width: 100%;
             height: auto;
-            margin: 0 auto 12px;
+            margin: 0 auto 14px;
             filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.35));
         }
 
@@ -209,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <main class="container">
     <div class="container-inner">
         <div class="brand">
-            <img class="brand-logo" src="/logo.jpg" width="200" alt="Baba PRO — Gestao, jogos, goleiros, arbitros" decoding="async">
+            <img class="brand-logo" src="/logo.jpg" width="280" alt="Baba PRO — Gestao, jogos, goleiros, arbitros" decoding="async">
             <span>Acesso seguro por telefone, codigo do baba e PIN de quatro digitos.</span>
         </div>
 

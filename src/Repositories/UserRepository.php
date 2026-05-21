@@ -28,7 +28,9 @@ final class UserRepository
                 m.role AS membership_role,
                 b.id AS baba_id,
                 b.name AS baba_name,
-                b.code AS baba_code
+                b.code AS baba_code,
+                b.photo_path AS baba_photo_path,
+                b.welcome_message AS baba_welcome_message
             FROM users u
             INNER JOIN baba_members m ON m.user_id = u.id AND m.status = 'active'
             INNER JOIN babas b ON b.id = m.baba_id AND b.status = 'active'

@@ -33,7 +33,13 @@ final class Database
                 PDO::ATTR_EMULATE_PREPARES => false,
             ]);
         } catch (PDOException $exception) {
-            throw new RuntimeException('Nao foi possivel conectar no MySQL.', 0, $exception);
+            $hint = sprintf(
+                'Nao foi possivel conectar no MySQL (%s@%s, banco %s). Verifique .env e rode scripts/setup_local_db.sh',
+                $username,
+                $host,
+                $database
+            );
+            throw new RuntimeException($hint, 0, $exception);
         }
 
         return self::$connection;

@@ -18,6 +18,10 @@ if (!$auth->isAuthenticated()) {
     redirect('/login.php');
 }
 
+if ($auth->needsBabaWelcome()) {
+    redirect('/baba-bemvindo.php');
+}
+
 $user = $auth->user();
 $canManageUsers = $auth->canManageUsers();
 $nextMatch = $matches->findNextByBaba((int) $user['baba_id']);
@@ -84,7 +88,7 @@ $heroDenom = max($totalAttendance, 10);
 <main class="app app--dashboard">
     <header class="dash-topbar">
         <a href="/dashboard.php" class="dash-topbar-logo-wrap">
-            <img src="/logo.jpg" width="40" height="40" alt="Baba PRO" class="dash-topbar-logo" decoding="async">
+            <img src="/logo.jpg" width="56" height="56" alt="Baba PRO" class="dash-topbar-logo" decoding="async">
         </a>
         <div class="dash-topbar-right">
             <div class="dash-points" title="Pontos fantasy (em breve)">
@@ -229,17 +233,7 @@ $heroDenom = max($totalAttendance, 10);
     <section class="panel panel--flush dash-game-center">
         <p class="section-title">Centro</p>
         <h2 class="section-heading">Game Center</h2>
-        <div class="module-grid module-grid--tiles">
-            <a class="module module-tile m-gold" href="/sorteio.php">
-                <span class="module-icon module-icon--trophy" aria-hidden="true"></span>
-                <span class="module-inner">
-                    <span class="module-name">Rankings</span>
-                    <span class="module-hint">Tabela e desempenho</span>
-                </span>
-                <span class="module-arrow" aria-hidden="true">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                </span>
-            </a>
+        <div class="module-grid module-grid--tiles module-grid--six">
             <a class="module module-tile m-purple" href="/sorteio.php">
                 <span class="module-icon module-icon--shirt" aria-hidden="true"></span>
                 <span class="module-inner">
@@ -260,11 +254,41 @@ $heroDenom = max($totalAttendance, 10);
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                 </span>
             </a>
-            <a class="module module-tile m-orange" href="/calendario.php">
-                <span class="module-icon module-icon--whistle" aria-hidden="true"></span>
+            <a class="module module-tile m-gold" href="/sorteio.php">
+                <span class="module-icon module-icon--trophy" aria-hidden="true"></span>
                 <span class="module-inner">
-                    <span class="module-name">Goleiros e arbitros</span>
-                    <span class="module-hint">Agenda e escala</span>
+                    <span class="module-name">Rankings</span>
+                    <span class="module-hint">Hall da fama / Modo Campeonato</span>
+                </span>
+                <span class="module-arrow" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </span>
+            </a>
+            <a class="module module-tile m-blue" href="/raio-x.php">
+                <span class="module-icon module-icon--radar" aria-hidden="true"></span>
+                <span class="module-inner">
+                    <span class="module-name">Raio X</span>
+                    <span class="module-hint">Evolucao, historico e dados</span>
+                </span>
+                <span class="module-arrow" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </span>
+            </a>
+            <a class="module module-tile m-orange" href="/resenhas.php">
+                <span class="module-icon module-icon--chat" aria-hidden="true"></span>
+                <span class="module-inner">
+                    <span class="module-name">Resenhas</span>
+                    <span class="module-hint">Comunidade do baba</span>
+                </span>
+                <span class="module-arrow" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </span>
+            </a>
+            <a class="module module-tile m-teal" href="/minha-regiao.php">
+                <span class="module-icon module-icon--map" aria-hidden="true"></span>
+                <span class="module-inner">
+                    <span class="module-name">Minha regiao</span>
+                    <span class="module-hint">Babas e quadras perto</span>
                 </span>
                 <span class="module-arrow" aria-hidden="true">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -297,23 +321,11 @@ $heroDenom = max($totalAttendance, 10);
     </section>
 </main>
 
-<nav class="nav nav--dash" aria-label="Navegacao principal">
-    <a class="active nav-item" href="/dashboard.php"><span class="nav-ic" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1v-9.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-    </span>Inicio</a>
-    <a class="nav-item" href="/calendario.php"><span class="nav-ic" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.5"/></svg>
-    </span>Calendario</a>
-    <a class="nav-item" href="/sorteio.php"><span class="nav-ic" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M8 8h8M8 12h8M8 16h5M6 4h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.5"/></svg>
-    </span>Sorteio</a>
-    <a class="nav-item" href="/mercado.php"><span class="nav-ic" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 8h15l-1.5 9h-12zM6 8L5 3H2M9 20a1 1 0 102 0 1 1 0 00-2 0zm8 0a1 1 0 102 0 1 1 0 00-2 0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-    </span>Mercado</a>
-    <a class="nav-item" href="#perfil"><span class="nav-ic" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.5"/></svg>
-    </span>Perfil</a>
-</nav>
+<?php
+$navActive = 'home';
+$navCanManageUsers = $canManageUsers;
+require __DIR__ . '/partials/bottom-nav.php';
+?>
 <script>
 (() => {
     const root = document.querySelector('[data-hero-roster]');

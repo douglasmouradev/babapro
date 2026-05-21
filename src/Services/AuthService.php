@@ -35,6 +35,12 @@ final class AuthService
             'baba_id' => (int) $user['baba_id'],
             'baba_name' => $user['baba_name'],
             'baba_code' => $user['baba_code'],
+            'baba_photo_path' => isset($user['baba_photo_path']) && is_string($user['baba_photo_path']) && $user['baba_photo_path'] !== ''
+                ? $user['baba_photo_path']
+                : null,
+            'baba_welcome_message' => isset($user['baba_welcome_message']) && is_string($user['baba_welcome_message']) && trim($user['baba_welcome_message']) !== ''
+                ? trim($user['baba_welcome_message'])
+                : null,
             'role' => $user['membership_role'],
             'global_role' => $user['global_role'],
         ];
@@ -44,8 +50,18 @@ final class AuthService
 
     public function logout(): void
     {
-        unset($_SESSION['auth']);
+        unset($_SESSION['auth'], $_SESSION['baba_welcome_seen']);
         session_regenerate_id(true);
+    }
+
+    public function needsBabaWelcome(): bool
+    {
+        return $this->isAuthenticated() && empty($_SESSION['baba_welcome_seen']);
+    }
+
+    public function markBabaWelcomeSeen(): void
+    {
+        $_SESSION['baba_welcome_seen'] = true;
     }
 
     public function isAuthenticated(): bool

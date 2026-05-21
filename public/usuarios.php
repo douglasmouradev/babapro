@@ -16,6 +16,10 @@ if (!$auth->isAuthenticated()) {
     redirect('/login.php');
 }
 
+if ($auth->needsBabaWelcome()) {
+    redirect('/baba-bemvindo.php');
+}
+
 if (!$auth->canManageUsers()) {
     redirect('/dashboard.php');
 }
@@ -321,13 +325,11 @@ $filteredUsers = count($users);
     </table>
 </section>
 
-<nav class="nav" aria-label="Navegacao principal">
-    <a href="/dashboard.php">Home</a>
-    <a href="/calendario.php">Calendario</a>
-    <a href="/sorteio.php">Sorteio</a>
-    <a href="/mercado.php">Mercado</a>
-    <a class="active" href="/usuarios.php">Usuarios</a>
-</nav>
+<?php
+$navActive = 'usuario';
+$navCanManageUsers = true;
+require __DIR__ . '/partials/bottom-nav.php';
+?>
 <?php
 $drawerUser = $user;
 $drawerCanManageUsers = $auth->canManageUsers();

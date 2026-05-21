@@ -26,28 +26,24 @@ $canManageUsers = $auth->canManageUsers();
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Baba PRO - Mercado</title>
+    <title>Baba PRO - Resenhas</title>
     <link rel="icon" type="image/jpeg" href="/logo.jpg">
     <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body class="page">
 <?php require __DIR__ . '/partials/dash-topbar-drawer.php'; ?>
 <section class="panel app">
-    <h1>Mercado</h1>
-    <p class="meta">Contratacoes e carteira do seu baba.</p>
-    <div class="wallet">Saldo atual: R$ 50,00</div>
-    <article class="item"><strong>Anderson Daronco</strong><br><span class="meta">Juiz | Cache por jogo: R$ 60,00</span></article>
-    <article class="item"><strong>Atleta Free Agent</strong><br><span class="meta">OVR 81 | Passe: R$ 120,00</span></article>
+    <h1>Resenhas</h1>
+    <p class="meta">Comunidade e resenha do seu baba.</p>
+    <p class="meta">Modulo em desenvolvimento — em breve.</p>
 </section>
 <?php
-$navActive = 'mercado';
+$navActive = 'home';
 $navCanManageUsers = $canManageUsers;
 require __DIR__ . '/partials/bottom-nav.php';
-?>
-<?php
 $drawerUser = $user;
 $drawerCanManageUsers = $canManageUsers;
-$drawerActive = 'mercado';
+$drawerActive = 'home';
 require __DIR__ . '/partials/app-drawer.php';
 ?>
 </body>

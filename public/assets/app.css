@@ -386,6 +386,7 @@ select {
 .m-green { background: linear-gradient(155deg, #1ecc7a 0%, #12995c 50%, #0b6b41 100%); }
 .m-orange { background: linear-gradient(155deg, #ffb020 0%, #e88900 50%, #b56d00 100%); }
 .m-purple { background: linear-gradient(155deg, #a855f7 0%, #7c3aed 50%, #5b21b6 100%); }
+.m-teal { background: linear-gradient(155deg, #14b8a6 0%, #0d9488 50%, #0f766e 100%); }
 
 .lineup { display: grid; gap: 8px; margin-top: 8px; }
 .player {
@@ -471,8 +472,8 @@ select {
 
 .dash-topbar-logo {
     display: block;
-    width: 40px;
-    height: 40px;
+    width: 56px;
+    height: 56px;
     object-fit: contain;
     background: rgba(8, 11, 18, 0.9);
 }
@@ -793,6 +794,8 @@ body.drawer-open {
 }
 
 .dash-drawer-logo {
+    width: 64px;
+    height: 64px;
     border-radius: 12px;
     border: 1px solid var(--border);
     object-fit: contain;
@@ -1058,10 +1061,14 @@ body.drawer-open {
     font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    background: linear-gradient(180deg, #ffd049 0%, var(--primary) 52%, #b87400 100%);
-    color: #140e05;
-    border: 1px solid rgba(255, 212, 120, 0.35);
-    box-shadow: 0 8px 28px rgba(232, 163, 23, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    background: linear-gradient(180deg, #3ee896 0%, #1ecc7a 52%, #12995c 100%);
+    color: #041a10;
+    border: 1px solid rgba(120, 255, 190, 0.35);
+    box-shadow: 0 8px 28px rgba(30, 204, 122, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.btn-hero-go:hover {
+    filter: brightness(1.06);
 }
 
 .btn-hero-ic {
@@ -1158,6 +1165,10 @@ body.drawer-open {
     margin-top: 8px;
 }
 
+.module-grid--six {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .module.module-tile {
     position: relative;
     display: block;
@@ -1195,6 +1206,9 @@ body.drawer-open {
 .module-icon--shirt::before { content: "👕"; }
 .module-icon--wallet::before { content: "💰"; }
 .module-icon--whistle::before { content: "🧤"; }
+.module-icon--radar::before { content: "📊"; }
+.module-icon--chat::before { content: "💬"; }
+.module-icon--map::before { content: "📍"; }
 
 .module-tile .module-arrow {
     position: absolute;
@@ -1313,6 +1327,102 @@ body.drawer-open {
 .nav--dash a.active .nav-ic {
     opacity: 1;
     filter: drop-shadow(0 0 12px rgba(232, 163, 23, 0.55));
+}
+
+/* —— Tela de boas-vindas do baba (pos-login) —— */
+.page--baba-welcome {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    padding: 24px 16px 32px;
+}
+
+.baba-welcome {
+    width: min(420px, 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.baba-welcome-brand {
+    text-align: center;
+}
+
+.baba-welcome-app-logo {
+    width: min(120px, 32vw);
+    height: auto;
+    border-radius: 16px;
+    filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.45));
+}
+
+.baba-welcome-card {
+    width: 100%;
+    padding: 28px 22px 24px;
+    border-radius: var(--radius);
+    border: 1px solid rgba(56, 74, 108, 0.55);
+    background: linear-gradient(168deg, rgba(20, 28, 48, 0.97) 0%, rgba(6, 9, 18, 0.98) 100%);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+    text-align: center;
+}
+
+.baba-welcome-photo-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.baba-welcome-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(232, 163, 23, 0.55);
+    box-shadow: 0 0 32px rgba(232, 163, 23, 0.22);
+}
+
+.baba-welcome-photo--fallback {
+    display: grid;
+    place-items: center;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0a0e16;
+    background: linear-gradient(145deg, #ffe08a 0%, var(--primary) 100%);
+}
+
+.baba-welcome-code {
+    margin: 0 0 6px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--primary-2);
+}
+
+.baba-welcome-title {
+    margin: 0 0 14px;
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.baba-welcome-message {
+    margin: 0 0 22px;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--soft);
+}
+
+.baba-welcome-actions {
+    margin: 0;
+}
+
+.btn-baba-enter {
+    width: 100%;
+    font-size: 1rem;
+    padding: 14px 20px;
 }
 
 @media (max-width: 768px) {
